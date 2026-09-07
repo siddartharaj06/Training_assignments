@@ -1,0 +1,242 @@
+Coding Questions:
+
+1. Delete a node from a binary search tree.
+
+import java.util.*;
+class Main{
+    static class Node{
+        int data;
+        Node left, right;
+        Node(int data){
+            this.data = data;
+            left = right = null;
+        }
+    }
+
+    static Node insert(Node root, int data){
+        if(root == null){
+            return new Node(data);
+        }
+        if(data < root.data){
+            root.left = insert(root.left, data);
+        }
+	else{
+            root.right = insert(root.right, data);
+        }
+        return root;
+    }
+
+    static Node delete(Node root, int data){
+        if(root == null){
+            return null;
+        }
+
+        if(data < root.data){
+            root.left = delete(root.left, data);
+        } 
+	else if(data > root.data){
+            root.right = delete(root.right, data);
+        }
+	else{
+            if(root.left == null){
+                return root.right;
+            }
+            if(root.right == null){
+                return root.left;
+            }
+            Node temp = root.right;
+            while(temp.left != null){
+                temp = temp.left;
+            }
+            root.data = temp.data;
+            root.right = delete(root.right, temp.data);
+        }
+        return root;
+    }
+    static void inorder(Node root){
+        if(root == null){
+            return;
+        }
+        inorder(root.left);
+        System.out.print(root.data + " ");
+        inorder(root.right);
+    }
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        Node root = null;
+        int n = sc.nextInt();
+        for(int i = 0; i < n; i++){
+            int value = sc.nextInt();
+            root = insert(root, value);
+        }
+
+        int deleteValue = sc.nextInt();
+        root = delete(root, deleteValue);
+        inorder(root);
+    }
+}
+
+
+
+2. Check if a binary tree is a binary search tree.
+
+import java.util.*;
+class Main{
+    static class Node{
+        int data;
+        Node left, right;
+        Node(int data){
+            this.data = data;
+            left = right = null;
+        }
+    }
+
+    static Node createTree(Scanner sc){
+        int data = sc.nextInt();
+        if(data == -1){
+            return null;
+        }
+        Node root = new Node(data);
+        root.left = createTree(sc);
+        root.right = createTree(sc);
+        return root;
+    }
+
+    static boolean isBST(Node root, int min, int max){
+        if(root == null){
+            return true;
+        }
+        if(root.data <= min || root.data >= max){
+            return false;
+        }
+        return isBST(root.left, min, root.data) &&
+               isBST(root.right, root.data, max);
+    }
+
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        Node root = createTree(sc);
+        if(isBST(root, Integer.MIN_VALUE, Integer.MAX_VALUE)){
+            System.out.println("Yes");
+        }
+	else{
+            System.out.println("No");
+        }
+    }
+}
+
+
+3. Find the kth smallest and kth largest elements in a BST.
+
+import java.util.*;
+class Main{
+    static class Node{
+        int data;
+        Node left, right;
+        Node(int data){
+            this.data = data;
+            left = right = null;
+        }
+    }
+
+    static Node insert(Node root, int data){
+        if(root == null) {
+            return new Node(data);
+        }
+        if(data < root.data){
+            root.left = insert(root.left, data);
+        }
+	else{
+            root.right = insert(root.right, data);
+        }
+        return root;
+    }
+
+    static void inorder(Node root, ArrayList<Integer> list){
+        if(root == null){
+            return;
+        }
+        inorder(root.left, list);
+        list.add(root.data);
+        inorder(root.right, list);
+    }
+
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        Node root = null;
+        int n = sc.nextInt();
+        for(int i = 0; i < n; i++){
+            root = insert(root, sc.nextInt());
+        }
+        int k = sc.nextInt();
+        ArrayList<Integer> list = new ArrayList<>();
+        inorder(root, list);
+
+        System.out.println("kth smallest: " + list.get(k - 1));
+        System.out.println("kth largest: " + list.get(list.size() - k));
+    }
+}
+
+
+
+
+4. Find whether the given BST is balanced or not.
+
+import java.util.*;
+class Main{
+    static class Node{
+        int data;
+        Node left, right;
+        Node(int data){
+            this.data = data;
+            left = right = null;
+        }
+    }
+
+    static Node insert(Node root, int data){
+        if(root == null){
+            return new Node(data);
+        }
+        if(data < root.data){
+            root.left = insert(root.left, data);
+        } 
+	else{
+            root.right = insert(root.right, data);
+        }
+        return root;
+    }
+
+    static int height(Node root){
+        if(root == null){
+            return 0;
+        }
+        int left = height(root.left);
+        int right = height(root.right);
+        if(Math.abs(left - right) > 1){
+            return -1;
+        }
+        return Math.max(left, right) + 1;
+    }
+
+    static boolean isBalanced(Node root){
+        return height(root) != -1;
+    }
+
+    public static void main(String[] args){
+        Scanner sc = new Scanner(System.in);
+        Node root = null;
+        int n = sc.nextInt();
+
+        for(int i = 0; i < n; i++){
+            root = insert(root, sc.nextInt());
+        }
+
+        if(isBalanced(root)){
+            System.out.println("Balanced");
+        }
+	else{
+            System.out.println("Not Balanced");
+        }
+    }
+}
+
